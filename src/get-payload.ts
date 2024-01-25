@@ -24,7 +24,7 @@ console.log('PAYLOAD_SECRET: ', process.env.PAYLOAD_SECRET)
 
 export const getPayloadClient = async ({
   initOptions,
-}: Args = {}) => {
+}: Args = {}): Promise<Payload> => {
   if (!process.env.PAYLOAD_SECRET) {
     throw new Error('PAYLOAD_SECRET não foi encontrado.')
   }

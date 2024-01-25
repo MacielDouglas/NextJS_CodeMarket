@@ -9,18 +9,25 @@ import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { AuthCredentialValidator, TAuthCredentialsValidator } from "@/lib/validators/account-credentials-validator"
+import { AuthCredentialsValidator, TAuthCredentialsValidator } from "@/lib/validators/account-credentials-validator"
+import { trpc } from "@/trpc/client"
 
 const Page = () => {
 
-  const {register, handleSubmit, formState:{errors},} = useForm({
-    resolver: zodResolver(AuthCredentialValidator),
+  const {
+    register,
+    handleSubmit,
+    formState:{errors},
+  } = useForm<TAuthCredentialsValidator>({
+    resolver: zodResolver(AuthCredentialsValidator),
   })
+
+const {mutate, isLoading} = 
+  trpc.auth.createPayloadUser.useMutation({})
 
   const onSubmit = ({email, password}: TAuthCredentialsValidator) => {
     //enviando os dados para o servidor.
-    
+    mutate({email, password})
   }
 
   return <>
@@ -45,7 +52,7 @@ const Page = () => {
             </div>
             <div className="grid gap-1 py-2">
               <Label htmlFor="password">Senha</Label>
-              <Input {...register('password')} className={cn({'focus-visible:ring-red-500': errors.password})}
+              <Input {...register('password')} type="password" className={cn({'focus-visible:ring-red-500': errors.password})}
               placeholder="Senha"/>
             </div>
             <Button>Entrar</Button>
